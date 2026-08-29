@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-brand-primary: #0F6B5C;
+    --color-brand-dark: #1A3C34;
+    --color-whatsapp: #25D366;
+    --color-whatsapp-hover: #1EBE5D;
+    --color-bg: #FAFAF8;
+    --color-surface-soft: #F1F7F6;
+    --color-surface-card: #FFFFFF;
+    --color-text: #16211E;
+    --color-muted: #5C6B67;
+    --color-border: #E0E5E4;
+    --color-border-subtle: #EBEFEF;
+    --radius-card: 16px;
+    --radius-pill: 9999px;
+  }
+
+  html {
+    font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    overflow-x: hidden;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* Accessibility: focused elements outline */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid var(--color-brand-primary);
+    outline-offset: 2px;
+  }
+
+  /* Refined typography scale defaults */
+  h1, h2, h3, h4 {
+    letter-spacing: -0.015em;
+    color: var(--color-brand-dark);
+  }
+
+  /* Reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+

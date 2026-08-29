@@ -1,0 +1,6 @@
+{
+  "name": "خدمة بيت | خدمات منزلية متكاملة",
+  "description": "خدمات تنظيف المنازل والفلل والكنب والسجاد والخزانات والمكيفات ومكافحة الحشرات وتسليك الصرف الصحي في المنطقة الشرقية. تواصل معنا عبر واتساب.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
