@@ -20,6 +20,7 @@ export const Header: React.FC = () => {
   const navLinks = [
     { label: 'الخدمات', href: '#services' },
     { label: 'المدن', href: '#cities' },
+    { label: 'موقعنا', href: '#location' },
     { label: 'لماذا خدمة بيت؟', href: '#why-us' },
     { label: 'كيف نعمل', href: '#how-it-works' },
     { label: 'الأسئلة الشائعة', href: '#faq' },

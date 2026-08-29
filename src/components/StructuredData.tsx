@@ -16,7 +16,7 @@ export const StructuredData: React.FC = () => {
   const currentOrigin =
     typeof window !== 'undefined' && window.location.origin
       ? window.location.origin
-      : 'https://khidmabeit.com';
+      : 'https://khidma-beit.vercel.app';
 
   // 1. Filter verified reviews (if any exist in business config)
   const verifiedReviews = REVIEWS_DATA.filter((r) => r.verified);
@@ -32,28 +32,48 @@ export const StructuredData: React.FC = () => {
   }
 
   // 3. Dynamic LocalBusiness / HomeAndConstructionBusiness Schema
+  const defaultGeo = { latitude: 26.4207, longitude: 50.0888 };
+  const geo = BUSINESS_CONFIG.geo ?? defaultGeo;
+
   const localBusinessSchema: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'HomeAndConstructionBusiness',
     '@id': `${currentOrigin}/#business`,
     name: BUSINESS_CONFIG.name,
     alternateName: `${BUSINESS_CONFIG.name} | ${BUSINESS_CONFIG.descriptor}`,
+    slogan: `${BUSINESS_CONFIG.descriptor} في ${BUSINESS_CONFIG.region}`,
     description: `خدمات منزلية متكاملة تشمل ${SERVICES_DATA.map((s) => s.name).join('، ')} في ${BUSINESS_CONFIG.region}.`,
     url: currentOrigin,
     telephone: `+${BUSINESS_CONFIG.phone}`,
     priceRange: '$$',
-    image: `${currentOrigin}/icon.png`,
+    currenciesAccepted: 'SAR',
+    image: `${currentOrigin}/og-image.png`,
     address: {
       '@type': 'PostalAddress',
       ...(BUSINESS_CONFIG.address ? { streetAddress: BUSINESS_CONFIG.address } : {}),
+      ...(BUSINESS_CONFIG.addressCity ? { addressLocality: BUSINESS_CONFIG.addressCity } : {}),
+      ...(BUSINESS_CONFIG.postalCode ? { postalCode: BUSINESS_CONFIG.postalCode } : {}),
       addressRegion: 'المنطقة الشرقية',
       addressCountry: 'SA',
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: 26.4207,
-      longitude: 50.0888,
+      latitude: geo.latitude,
+      longitude: geo.longitude,
     },
+    hasMap: BUSINESS_CONFIG.mapsUrl
+      ? BUSINESS_CONFIG.mapsUrl
+      : `https://www.google.com/maps/search/?api=1&query=${geo.latitude},${geo.longitude}`,
+    ...(BUSINESS_CONFIG.openingHours
+      ? {
+          openingHoursSpecification: {
+            '@type': 'OpeningHoursSpecification',
+            dayOfWeek: BUSINESS_CONFIG.openingHours.dayOfWeek,
+            opens: BUSINESS_CONFIG.openingHours.opens,
+            closes: BUSINESS_CONFIG.openingHours.closes,
+          },
+        }
+      : {}),
     areaServed: CITIES_DATA.map((city) => ({
       '@type': 'City',
       name: city.nameAr,

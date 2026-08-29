@@ -7,6 +7,8 @@ export interface BusinessConfig {
   region: string;
   email?: string | null;
   address?: string | null;
+  addressCity?: string | null;
+  postalCode?: string | null;
   licenseNumber?: string | null;
   socialLinks?: {
     instagram?: string;
@@ -16,6 +18,18 @@ export interface BusinessConfig {
   } | null;
   yearsExperience?: number | null;
   guaranteeNote?: string | null;
+  geo?: {
+    latitude: number;
+    longitude: number;
+  } | null;
+  mapsUrl?: string | null;
+  mapsEmbedUrl?: string | null;
+  openingHours?: {
+    dayOfWeek: string[];
+    opens: string;
+    closes: string;
+    description?: string;
+  } | null;
 }
 
 export interface ServiceItem {

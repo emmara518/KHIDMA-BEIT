@@ -4,7 +4,7 @@ import { WhatsAppIcon } from './WhatsAppIcon';
 import { BUSINESS_CONFIG, SERVICES_DATA, CITIES_DATA } from '../config/business';
 import { buildWhatsAppUrl, buildPhoneUrl } from '../utils/whatsapp';
 import { trackEvent } from '../utils/analytics';
-import { Phone, MapPin, MessageSquare } from 'lucide-react';
+import { Phone, MapPin, MessageSquare, Clock } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -36,6 +36,12 @@ export const Footer: React.FC = () => {
                 <MapPin className="w-4 h-4 text-[#0F6B5C] shrink-0" />
                 <span>المملكة العربية السعودية — المنطقة الشرقية</span>
               </div>
+              {BUSINESS_CONFIG.openingHours?.description && (
+                <div className="flex items-center gap-2 text-xs text-[#1A3C34] font-medium">
+                  <Clock className="w-4 h-4 text-[#0F6B5C] shrink-0" />
+                  <span>{BUSINESS_CONFIG.openingHours.description}</span>
+                </div>
+              )}
             </div>
           </div>
 

@@ -8,6 +8,7 @@ import { QuickServicePicker } from './components/QuickServicePicker';
 import { WhyKhidmaBeit } from './components/WhyKhidmaBeit';
 import { HowItWorks } from './components/HowItWorks';
 import { ServiceAreas } from './components/ServiceAreas';
+import { LocationMap } from './components/LocationMap';
 import { BeforeAfterSection } from './components/BeforeAfterSection';
 import { ProofSection } from './components/ProofSection';
 import { ReviewsSection } from './components/ReviewsSection';
@@ -48,19 +49,22 @@ export default function App() {
         {/* 8 — Service Areas */}
         <ServiceAreas />
 
-        {/* 9 — Before / After (Conditional) */}
+        {/* 9 — Location / Google Maps */}
+        <LocationMap />
+
+        {/* 10 — Before / After (Conditional) */}
         <BeforeAfterSection />
 
-        {/* 10 — Trust / Proof (Conditional) */}
+        {/* 11 — Trust / Proof (Conditional) */}
         <ProofSection />
 
-        {/* 11 — Reviews & Feedback Invitation */}
+        {/* 12 — Reviews & Feedback Invitation */}
         <ReviewsSection />
 
-        {/* 12 — FAQ Accordion */}
+        {/* 13 — FAQ Accordion */}
         <FAQSection />
 
-        {/* 13 — Final CTA */}
+        {/* 14 — Final CTA */}
         <FinalCTA />
       </main>
 

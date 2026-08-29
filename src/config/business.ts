@@ -19,11 +19,27 @@ export const BUSINESS_CONFIG: BusinessConfig = {
   whatsappNumber: '966500000000', // Centralized WhatsApp number
   region: 'المنطقة الشرقية بالمملكة العربية السعودية',
   email: null, // Left null until provided by client
-  address: null, // Left null until provided by client
+  address: null, // Left null until provided by client (مثال: حي الشاطئ، الدمام)
+  addressCity: 'الدمام', // المدينة الرئيسية — عدّلها بعد إضافة نشاطك على خرائط جوجل
+  postalCode: null, // الرمز البريدي عند توفره
   licenseNumber: null, // Left null until provided by client
   socialLinks: null,
   yearsExperience: null,
   guaranteeNote: null,
+  // الموقع الجغرافي التقريبي — استبدله بإحداثيات عنوانك الفعلي بعد نشر النشاط على خرائط جوجل
+  geo: {
+    latitude: 26.4207,
+    longitude: 50.0888,
+  },
+  // رابط ملف نشاطك على خرائط جوجل (بعد إنشائه). تُستخدم القيمة أدناه تلقائياً إن تُركت null
+  mapsUrl: null,
+  mapsEmbedUrl: null,
+  openingHours: {
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    opens: '08:00',
+    closes: '23:00',
+    description: 'يومياً من 8 صباحاً حتى 11 مساءً',
+  },
 };
 
 export const CITIES_DATA: CityItem[] = [
