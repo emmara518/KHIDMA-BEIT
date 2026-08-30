@@ -14,9 +14,9 @@ import {
 export const BUSINESS_CONFIG: BusinessConfig = {
   name: 'خدمة بيت',
   descriptor: 'خدمات منزلية متكاملة',
-  phone: '966500000000', // Centralized phone number for Khidma Beit
-  formattedPhoneDisplay: '050 000 0000',
-  whatsappNumber: '966500000000', // Centralized WhatsApp number
+  phone: '966535025900', // Unified phone number for Khidma Beit
+  formattedPhoneDisplay: '053 502 5900',
+  whatsappNumber: '966535025900', // Unified WhatsApp number
   region: 'المنطقة الشرقية بالمملكة العربية السعودية',
   email: null, // Left null until provided by client
   address: null, // Left null until provided by client (مثال: حي الشاطئ، الدمام)
