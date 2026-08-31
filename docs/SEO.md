@@ -39,6 +39,13 @@
 - **`favicon.svg`** في `public/` وإشارته في `index.html`.
 - **`og-image.png`** (1200×630) مع وسوم `og:image` و `twitter:image`.
 
+### تكامل Google Customer Reviews (تقييم الباعة + شارة المتجر)
+- **استطلاع التقييم (Opt-in)**: يظهر على صفحة تأكيد الطلب `/confirmation` بعد إرسال نموذج الهيرو (يتطلب البريد الإلكتروني والموعد المفضل). يُمرَّر إليه `order_id`, `email`, `delivery_country` (SA) و `estimated_delivery_date` ديناميكياً عبر `src/utils/googleReviews.ts` عند تحميل `platform.js` ثم `gapi.surveyoptin.render`.
+- **شارة المتجر (Store Widget)**: `src/components/MerchantBadge.tsx` يحمّل `merchantwidget.js` ويشغّلها بموقع `LEFT_BOTTOM` مع `region: 'SA'`؛ بارتفاع جانب إضافي على الجوال (`mobileBottomMargin`) حتى لا تتداخل مع شريط الحجز السفلي.
+- **مركز التهيئة**: `BUSINESS_CONFIG.googleMerchantId` (5846699356)، `deliveryCountry`، `merchantWidgetPosition`.
+- **المتطلبات**: `vercel.json` يعيد توجيه أي مسار إلى `index.html` حتى تعمل صفحة `/confirmation` على Vercel.
+- **ملاحظات**: تظهر عبارة "لا يوجد تقييم بعد" في الشارة حتى يبدأ تجميع التقييمات؛ ويلزم استكمال التسجيل في Google Merchant Center وحساب Google Customer Reviews لتفعيل البرنامج.
+
 ### خطوات النشر على خرائط جوجل (من قِبل العميل)
 1. إنشاء ملف نشاط (Google Business Profile) بالاسم: **خدمة بيت**.
 2. استخدام نفس رقم الهاتف/الواتساب الظاهر في الموقع (اتساق NAP).
