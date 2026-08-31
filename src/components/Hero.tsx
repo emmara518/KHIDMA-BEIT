@@ -3,6 +3,7 @@ import { WhatsAppIcon } from './WhatsAppIcon';
 import { buildWhatsAppUrl, buildPhoneUrl } from '../utils/whatsapp';
 import { trackEvent } from '../utils/analytics';
 import { BUSINESS_CONFIG, CITIES_DATA, SERVICES_DATA } from '../config/business';
+import { generateOrderReference } from '../utils/googleReviews';
 import {
   Phone,
   MapPin,
@@ -12,12 +13,16 @@ import {
   Clock,
   Zap,
   Send,
+  Mail,
+  CalendarDays,
 } from 'lucide-react';
 
 export const Hero: React.FC = () => {
   const [selectedService, setSelectedService] = useState<string>(SERVICES_DATA[0].name);
   const [selectedCity, setSelectedCity] = useState<string>(CITIES_DATA[0].nameAr);
   const [propertyType, setPropertyType] = useState<string>('شقة سكنية');
+  const [customerEmail, setCustomerEmail] = useState<string>('');
+  const [preferredDate, setPreferredDate] = useState<string>('');
 
   const handleWhatsAppClick = (location: string) => {
     trackEvent('whatsapp_click', { cta_location: location, service: selectedService, city: selectedCity });
@@ -29,15 +34,29 @@ export const Hero: React.FC = () => {
 
   const handleInteractiveBooking = (e: React.FormEvent) => {
     e.preventDefault();
-    const customMessage = `السلام عليكم ورحمة الله وبركاته،\nأرغب في حجز خدمة عبر موقع خدمة بيت:\n- *نوع الخدمة:* ${selectedService}\n- *المدينة:* ${selectedCity}\n- *نوع العقار/الطلب:* ${propertyType}\n\nيرجى تزويدي بالتفاصيل والتكلفة وأقرب موعد متاح. شكراً لكم.`;
+    const emailLine = customerEmail.trim() ? `\n- *البريد الإلكتروني:* ${customerEmail.trim()}` : '';
+    const dateLine = preferredDate
+      ? `\n- *الموعد المفضل:* ${preferredDate}`
+      : '';
+    const customMessage = `السلام عليكم ورحمة الله وبركاته،\nأرغب في حجز خدمة عبر موقع خدمة بيت:\n- *نوع الخدمة:* ${selectedService}\n- *المدينة:* ${selectedCity}\n- *نوع العقار/الطلب:* ${propertyType}${emailLine}${dateLine}\n\nيرجى تزويدي بالتفاصيل والتكلفة وأقرب موعد متاح. شكراً لكم.`;
     const targetUrl = buildWhatsAppUrl({
       service: selectedService,
       city: selectedCity,
       customMessage,
       source: 'hero_interactive_widget',
     });
+    const orderId = generateOrderReference();
     trackEvent('hero_booking_submit', { service: selectedService, city: selectedCity, property: propertyType });
     window.open(targetUrl, '_blank', 'noopener,noreferrer');
+
+    const confirmationParams = new URLSearchParams({
+      order_id: orderId,
+      email: customerEmail.trim(),
+      date: preferredDate,
+      service: selectedService,
+      city: selectedCity,
+    });
+    window.location.assign(`/confirmation?${confirmationParams.toString()}`);
   };
 
   return (
@@ -235,6 +254,45 @@ export const Hero: React.FC = () => {
                     <option value="تسليك مجاري / بيارة">تسليك مجاري / بيارة</option>
                     <option value="مكتب تجاري أو محل">مكتب تجاري أو محل</option>
                   </select>
+                </div>
+
+                {/* 4. Customer Email */}
+                <div className="space-y-1">
+                  <label htmlFor="hero-email-input" className="block text-xs font-bold text-[#1A3C34]">
+                    البريد الإلكتروني:
+                  </label>
+                  <input
+                    id="hero-email-input"
+                    type="email"
+                    required
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    autoComplete="email"
+                    className="w-full bg-[#FAFAF8] border border-[#E0E5E4] rounded-xl px-3.5 py-2 text-sm font-semibold text-[#1A3C34] placeholder:text-[#9AA8A4] focus:outline-none focus:ring-2 focus:ring-[#0F6B5C] focus:bg-white transition-colors"
+                  />
+                  <p className="text-[11px] text-[#5C6B67]">
+                    سنستخدمه لإرسال تفاصيل الطلب ودعوة تقييم من Google.
+                  </p>
+                </div>
+
+                {/* 5. Preferred Service Date */}
+                <div className="space-y-1">
+                  <label htmlFor="hero-date-input" className="block text-xs font-bold text-[#1A3C34]">
+                    الموعد المفضل للتنفيذ:
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="hero-date-input"
+                      type="date"
+                      required
+                      value={preferredDate}
+                      onChange={(e) => setPreferredDate(e.target.value)}
+                      min={new Date().toISOString().split('T')[0]}
+                      className="w-full bg-[#FAFAF8] border border-[#E0E5E4] rounded-xl px-3.5 py-2 text-sm font-semibold text-[#1A3C34] focus:outline-none focus:ring-2 focus:ring-[#0F6B5C] focus:bg-white transition-colors"
+                    />
+                    <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5C6B67] pointer-events-none" />
+                  </div>
                 </div>
 
                 {/* Summary Reassurance Box */}

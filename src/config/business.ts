@@ -40,6 +40,10 @@ export const BUSINESS_CONFIG: BusinessConfig = {
     closes: '23:00',
     description: 'يومياً من 8 صباحاً حتى 11 مساءً',
   },
+  // Google Customer Reviews (برنامج تقييم الباعة) + Store Widget (شارة التقييم)
+  googleMerchantId: 5846699356,
+  deliveryCountry: 'SA',
+  merchantWidgetPosition: 'LEFT_BOTTOM',
 };
 
 export const CITIES_DATA: CityItem[] = [

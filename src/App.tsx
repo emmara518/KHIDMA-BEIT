@@ -16,8 +16,14 @@ import { FAQSection } from './components/FAQSection';
 import { FinalCTA } from './components/FinalCTA';
 import { Footer } from './components/Footer';
 import { MobileStickyBar } from './components/MobileStickyBar';
+import { MerchantBadge } from './components/MerchantBadge';
+import { OrderConfirmation } from './components/OrderConfirmation';
 
 export default function App() {
+  if (typeof window !== 'undefined' && window.location.pathname === '/confirmation') {
+    return <OrderConfirmation />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-[#FAFAF8] text-[#16211E]">
       {/* Structured Data / JSON-LD */}
@@ -73,6 +79,9 @@ export default function App() {
 
       {/* Mobile Sticky Bottom Conversion Bar */}
       <MobileStickyBar />
+
+      {/* Google Customer Reviews Store Widget Badge */}
+      <MerchantBadge />
     </div>
   );
 }

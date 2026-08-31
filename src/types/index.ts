@@ -30,6 +30,16 @@ export interface BusinessConfig {
     closes: string;
     description?: string;
   } | null;
+  googleMerchantId?: number | null;
+  deliveryCountry?: string | null;
+  merchantWidgetPosition?:
+    | 'LEFT_BOTTOM'
+    | 'RIGHT_BOTTOM'
+    | 'LEFT_TOP'
+    | 'RIGHT_TOP'
+    | 'TOP_BAR'
+    | 'BOTTOM_BAR'
+    | null;
 }
 
 export interface ServiceItem {

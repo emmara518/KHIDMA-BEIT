@@ -16,6 +16,7 @@ export type AnalyticsEventType =
   | 'faq_expand'
   | 'share_feedback_click'
   | 'hero_booking_submit'
+  | 'confirmation_view'
   | 'scope_calculator_submit'
   | 'city_tab_switch'
   | 'service_category_tab';
