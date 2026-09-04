@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /confirmation
 
 Sitemap: https://khidma-beit.vercel.app/sitemap.xml

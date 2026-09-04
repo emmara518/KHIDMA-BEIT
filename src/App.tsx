@@ -18,10 +18,14 @@ import { Footer } from './components/Footer';
 import { MobileStickyBar } from './components/MobileStickyBar';
 import { MerchantBadge } from './components/MerchantBadge';
 import { OrderConfirmation } from './components/OrderConfirmation';
+import { AdminDashboard } from './components/AdminDashboard';
 
 export default function App() {
   if (typeof window !== 'undefined' && window.location.pathname === '/confirmation') {
     return <OrderConfirmation />;
+  }
+  if (typeof window !== 'undefined' && window.location.pathname === '/admin') {
+    return <AdminDashboard />;
   }
 
   return (
