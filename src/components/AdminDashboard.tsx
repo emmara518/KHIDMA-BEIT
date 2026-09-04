@@ -47,6 +47,81 @@ const STATUS_META: Record<OrderStatus, { label: string; classes: string }> = {
 
 const STATUS_ORDER: OrderStatus[] = ['new', 'contacting', 'confirmed', 'in_progress', 'completed', 'cancelled'];
 
+// بيانات تجريبية للمعاينة فقط — أسماء وأرقام وهمية بشكل واضح (050000000x)
+// ولا تمثل طلبات حقيقية ولا تصلح لأي تحقق رسمي.
+const DEMO_ORDERS: AdminOrder[] = [
+  {
+    id: 'DEMO-001',
+    name: 'عميل تجريبي 1',
+    phone: '0500000001',
+    service: 'تنظيف المنازل والشقق',
+    city: 'الدمام',
+    district: 'حي الشاطئ',
+    date: '2026-09-04',
+    time: '10:00',
+    price: '250',
+    status: 'new',
+    notes: 'طلب تجريبي للمعاينة فقط',
+    createdAt: '2026-09-04T08:00:00.000Z',
+  },
+  {
+    id: 'DEMO-002',
+    name: 'عميل تجريبي 2',
+    phone: '0500000002',
+    service: 'غسيل وصيانة المكيفات',
+    city: 'الخبر',
+    district: 'حي العليا',
+    date: '2026-09-03',
+    time: '16:30',
+    price: '180',
+    status: 'contacting',
+    notes: 'طلب تجريبي للمعاينة فقط',
+    createdAt: '2026-09-03T08:00:00.000Z',
+  },
+  {
+    id: 'DEMO-003',
+    name: 'عميل تجريبي 3',
+    phone: '0500000003',
+    service: 'تنظيف الكنب والمجالس',
+    city: 'القطيف',
+    district: 'حي الناصرة',
+    date: '2026-09-01',
+    time: '09:00',
+    price: '300',
+    status: 'in_progress',
+    notes: 'طلب تجريبي للمعاينة فقط',
+    createdAt: '2026-09-01T08:00:00.000Z',
+  },
+  {
+    id: 'DEMO-004',
+    name: 'عميل تجريبي 4',
+    phone: '0500000004',
+    service: 'مكافحة الحشرات والآفات',
+    city: 'الظهران',
+    district: 'حي الدوحة',
+    date: '2026-08-30',
+    time: '11:00',
+    price: '220',
+    status: 'completed',
+    notes: 'طلب تجريبي للمعاينة فقط',
+    createdAt: '2026-08-30T08:00:00.000Z',
+  },
+  {
+    id: 'DEMO-005',
+    name: 'عميل تجريبي 5',
+    phone: '0500000005',
+    service: 'تسليك الصرف والبيارات',
+    city: 'سيهات',
+    district: 'حي الغدير',
+    date: '2026-08-28',
+    time: '14:00',
+    price: '200',
+    status: 'confirmed',
+    notes: 'طلب تجريبي للمعاينة فقط',
+    createdAt: '2026-08-28T08:00:00.000Z',
+  },
+];
+
 const EMPTY_FORM = {
   name: '',
   phone: '',
@@ -97,6 +172,12 @@ export const AdminDashboard: React.FC = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | OrderStatus>('all');
   const [formError, setFormError] = useState('');
+  const [demoMode, setDemoMode] = useState(false);
+  const [demoOrders, setDemoOrders] = useState<AdminOrder[]>(DEMO_ORDERS);
+
+  // في وضع المعاينة تُعرض البيانات التجريبية بدل الطلبات الحقيقية
+  // وأي تعديل عليها مؤقت ويُتجاهل عند الخروج من المعاينة.
+  const displayed = demoMode ? demoOrders : orders;
 
   useEffect(() => {
     setOrders(loadOrders());
@@ -125,18 +206,18 @@ export const AdminDashboard: React.FC = () => {
   }, [orders]);
 
   const stats = useMemo(() => {
-    const by = (s: OrderStatus) => orders.filter((o) => o.status === s).length;
+    const by = (s: OrderStatus) => displayed.filter((o) => o.status === s).length;
     return {
-      total: orders.length,
+      total: displayed.length,
       fresh: by('new'),
       active: by('contacting') + by('confirmed') + by('in_progress'),
       done: by('completed'),
     };
-  }, [orders]);
+  }, [displayed]);
 
   const filtered = useMemo(() => {
     const q = search.trim();
-    return orders
+    return displayed
       .filter((o) => (statusFilter === 'all' ? true : o.status === statusFilter))
       .filter((o) =>
         q
@@ -147,7 +228,7 @@ export const AdminDashboard: React.FC = () => {
       )
       .slice()
       .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
-  }, [orders, search, statusFilter]);
+  }, [displayed, search, statusFilter]);
 
   const setField = <K extends keyof typeof EMPTY_FORM>(key: K, value: (typeof EMPTY_FORM)[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -208,6 +289,10 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const handleStatusChange = (id: string, status: OrderStatus) => {
+    if (demoMode) {
+      setDemoOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
+      return;
+    }
     setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
   };
 
@@ -253,11 +338,27 @@ export const AdminDashboard: React.FC = () => {
               تُحفظ الطلبات محلياً على هذا الجهاز ({BUSINESS_CONFIG.formattedPhoneDisplay})
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                resetForm();
+                setDemoMode((v) => !v);
+              }}
+              className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-bold border transition-colors ${
+                demoMode
+                  ? 'bg-amber-100 border-amber-300 text-amber-900 hover:bg-amber-200'
+                  : 'bg-white border-[#E0E5E4] hover:bg-[#F1F7F6]'
+              }`}
+            >
+              <ClipboardList className="w-4 h-4" />
+              {demoMode ? 'خروج من المعاينة' : 'معاينة تجريبية'}
+            </button>
             <button
               type="button"
               onClick={handleExport}
-              disabled={orders.length === 0}
+              disabled={orders.length === 0 || demoMode}
+              title={demoMode ? 'التصدير متاح للطلبات الحقيقية فقط' : undefined}
               className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-bold bg-white border border-[#E0E5E4] hover:bg-[#F1F7F6] disabled:opacity-50 transition-colors"
             >
               <Download className="w-4 h-4" />
@@ -266,7 +367,9 @@ export const AdminDashboard: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowForm((v) => !v)}
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-extrabold text-white bg-[#0F6B5C] hover:bg-[#0B5146] transition-colors"
+              disabled={demoMode}
+              title={demoMode ? 'اخرج من المعاينة لإضافة طلب حقيقي' : undefined}
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-extrabold text-white bg-[#0F6B5C] hover:bg-[#0B5146] disabled:opacity-50 transition-colors"
             >
               {showForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
               {showForm ? 'إغلاق' : 'طلب جديد'}
@@ -282,6 +385,13 @@ export const AdminDashboard: React.FC = () => {
             </div>
           ))}
         </div>
+
+        {demoMode && (
+          <div className="mt-4 rounded-2xl border-2 border-dashed border-amber-400 bg-amber-50 px-4 py-3 text-sm font-black text-amber-900">
+            وضع المعاينة — جميع البيانات الظاهرة تجريبية ووهمية وليست طلبات حقيقية،
+            ولا تصلح لأي تحقق رسمي. اخرج من المعاينة لإدارة طلباتك الفعلية.
+          </div>
+        )}
 
         {showForm && (
           <form
@@ -454,10 +564,10 @@ export const AdminDashboard: React.FC = () => {
           <div className="mt-6 bg-white rounded-3xl border border-dashed border-[#E0E5E4] p-10 text-center">
             <ClipboardList className="w-10 h-10 text-[#0F6B5C] mx-auto" />
             <h2 className="mt-3 text-lg font-black text-[#1A3C34]">
-              {orders.length === 0 ? 'لا توجد طلبات بعد' : 'لا توجد نتائج مطابقة'}
+              {displayed.length === 0 ? 'لا توجد طلبات بعد' : 'لا توجد نتائج مطابقة'}
             </h2>
             <p className="mt-1 text-sm text-[#5C6B67]">
-              {orders.length === 0
+              {displayed.length === 0
                 ? 'ابدأ بإضافة أول طلب حقيقي من زر "طلب جديد" بالأعلى.'
                 : 'جرّب تغيير البحث أو فلتر الحالة.'}
             </p>
@@ -478,11 +588,18 @@ export const AdminDashboard: React.FC = () => {
                         {o.phone} • {o.id}
                       </p>
                     </div>
-                    <span
-                      className={`shrink-0 px-2.5 py-1 rounded-full text-[11px] font-black border ${STATUS_META[o.status].classes}`}
-                    >
-                      {STATUS_META[o.status].label}
-                    </span>
+                    <div className="flex flex-col items-end gap-1.5 shrink-0">
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-[11px] font-black border ${STATUS_META[o.status].classes}`}
+                      >
+                        {STATUS_META[o.status].label}
+                      </span>
+                      {demoMode && (
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black border border-dashed border-amber-400 bg-amber-50 text-amber-800">
+                          تجريبي
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <dl className="mt-3 space-y-1.5 text-sm">
                     <div className="flex items-center gap-1.5">
@@ -539,16 +656,20 @@ export const AdminDashboard: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => handleEdit(o)}
+                      disabled={demoMode}
+                      title={demoMode ? 'التعديل متاح للطلبات الحقيقية فقط' : 'تعديل الطلب'}
                       aria-label="تعديل الطلب"
-                      className="p-2.5 rounded-full bg-white border border-[#E0E5E4] hover:bg-[#F1F7F6] transition-colors"
+                      className="p-2.5 rounded-full bg-white border border-[#E0E5E4] hover:bg-[#F1F7F6] disabled:opacity-40 transition-colors"
                     >
                       <Pencil className="w-4 h-4" />
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDelete(o.id)}
+                      disabled={demoMode}
+                      title={demoMode ? 'الحذف متاح للطلبات الحقيقية فقط' : 'حذف الطلب'}
                       aria-label="حذف الطلب"
-                      className="p-2.5 rounded-full bg-white border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
+                      className="p-2.5 rounded-full bg-white border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-40 transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
